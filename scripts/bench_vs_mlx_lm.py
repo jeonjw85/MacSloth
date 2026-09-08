@@ -14,13 +14,13 @@ from typing import Final, TypedDict
 
 import mlx.core as mx
 import mlx.optimizers as optim
+from macsloth.trainer.loop import run_sft
+from macsloth.trainer.lora import TrainingConfig
 from mlx import nn
 from mlx_lm.tuner.callbacks import TrainingCallback
 from mlx_lm.tuner.datasets import CacheDataset
 from mlx_lm.tuner.lora import LoRALinear
 from mlx_lm.tuner.trainer import TrainingArgs, default_loss, train
-from mlx_unsloth.trainer.loop import run_sft
-from mlx_unsloth.trainer.lora import TrainingConfig
 
 BATCH_SIZE: Final = 4
 SEQ_LEN: Final = 128

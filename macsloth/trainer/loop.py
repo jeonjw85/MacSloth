@@ -12,15 +12,15 @@ import mlx.optimizers as optim
 from mlx import nn
 from mlx_lm.tuner.trainer import grad_checkpoint, iterate_batches
 
-from mlx_unsloth.trainer.errors import InvalidTrainingConfigError
-from mlx_unsloth.trainer.loss import masked_lm_loss
+from macsloth.trainer.errors import InvalidTrainingConfigError
+from macsloth.trainer.loss import masked_lm_loss
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from mlx_lm.tuner.datasets import CacheDataset
 
-    from mlx_unsloth.trainer.lora import TrainingConfig
+    from macsloth.trainer.lora import TrainingConfig
 
 
 @dataclass(frozen=True, slots=True)

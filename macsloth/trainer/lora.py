@@ -14,7 +14,7 @@ from mlx.utils import tree_flatten
 from mlx_lm.tuner.datasets import CacheDataset, load_local_dataset
 from typing_extensions import assert_never
 
-from mlx_unsloth.trainer.errors import (
+from macsloth.trainer.errors import (
     EmptyTrainSetError,
     InsufficientUnifiedMemoryError,
     InvalidTrainingConfigError,
@@ -23,7 +23,7 @@ from mlx_unsloth.trainer.errors import (
     NotADatasetDirError,
     UnknownOptimizerError,
 )
-from mlx_unsloth.trainer.loop import run_sft
+from macsloth.trainer.loop import run_sft
 
 if TYPE_CHECKING:
     from mlx.nn import Module

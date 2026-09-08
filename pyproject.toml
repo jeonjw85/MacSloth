@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mlx-unsloth"
+name = "macsloth"
 version = "0.1.0"
 description = "LoRA/QLoRA fine-tuning on Apple Silicon via MLX"
 requires-python = ">=3.10"
@@ -24,15 +24,15 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["mlx_unsloth*"]
+include = ["macsloth*"]
 
 [tool.setuptools.package-data]
-mlx_unsloth = ["py.typed"]
+macsloth = ["py.typed"]
 
 [tool.ruff]
 target-version = "py310"
 line-length = 88
-src = ["mlx_unsloth", "tests", "examples"]
+src = ["macsloth", "tests", "examples"]
 
 [tool.ruff.lint]
 select = ["ALL"]

@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("mlx_lm")
 
-from mlx_unsloth.models.loader import (
+from macsloth.models.loader import (
     FastLanguageModel,
     InvalidLoraRankError,
     LoraTargetError,
@@ -44,7 +44,7 @@ def test_from_pretrained_loads_named_checkpoint_and_sets_max_length(
         assert name == "mlx-community/test-4bit"
         return loaded, tokenizer
 
-    monkeypatch.setattr("mlx_unsloth.models.loader.load", fake_load)
+    monkeypatch.setattr("macsloth.models.loader.load", fake_load)
 
     model, tok = FastLanguageModel.from_pretrained(
         "mlx-community/test-4bit",
@@ -62,7 +62,7 @@ def test_from_pretrained_rejects_load_in_4bit_false(
     def fail_if_called(_name: str) -> None:
         raise AssertionError
 
-    monkeypatch.setattr("mlx_unsloth.models.loader.load", fail_if_called)
+    monkeypatch.setattr("macsloth.models.loader.load", fail_if_called)
 
     with pytest.raises(UnsupportedLoadIn4bitError) as exc_info:
         FastLanguageModel.from_pretrained(
@@ -126,7 +126,7 @@ def test_get_peft_model_freezes_and_converts_matched_layers(
         captured.use_dora = use_dora
 
     monkeypatch.setattr(
-        "mlx_unsloth.models.loader.linear_to_lora_layers",
+        "macsloth.models.loader.linear_to_lora_layers",
         fake_linear_to_lora_layers,
     )
 
@@ -172,11 +172,11 @@ def test_get_peft_model_patches_metal_when_dropout_is_zero(
     called: list[bool] = []
 
     monkeypatch.setattr(
-        "mlx_unsloth.models.loader.linear_to_lora_layers",
+        "macsloth.models.loader.linear_to_lora_layers",
         lambda *_args, **_kwargs: None,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.models.loader._patch_lora_linear_metal",
+        "macsloth.models.loader._patch_lora_linear_metal",
         lambda: called.append(True),
     )
 

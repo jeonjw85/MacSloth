@@ -11,7 +11,7 @@ from mlx.utils import tree_flatten, tree_unflatten
 from mlx_lm.gguf import convert_to_gguf
 from mlx_lm.utils import dequantize_model, load, save, upload_to_hub
 
-from mlx_unsloth.export.errors import (
+from macsloth.export.errors import (
     MissingAdapterError,
     MissingGgufConfigError,
     UnsupportedGgufModelError,

@@ -1,6 +1,6 @@
-# mlx-unsloth
+# MacSloth
 
-LoRA fine-tuning on Apple Silicon with MLX. Not Unsloth; same call-site shape only.
+LoRA fine-tuning on Apple Silicon with MLX.
 
 Python 3.10+, macOS, prequantized `mlx-community` checkpoint. No CUDA. No PyTorch train path.
 
@@ -15,7 +15,7 @@ pip install -e ".[dev]"
 ## Usage
 
 ```python
-from mlx_unsloth import (
+from macsloth import (
     FastLanguageModel,
     SFTTrainer,
     TrainingConfig,

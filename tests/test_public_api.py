@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import mlx_unsloth
-from mlx_unsloth import (
+import macsloth
+from macsloth import (
     FastLanguageModel,
     SFTTrainer,
     TrainingConfig,
@@ -13,11 +13,11 @@ from mlx_unsloth import (
 
 
 def test_package_exports_unsloth_entry_points() -> None:
-    assert mlx_unsloth.FastLanguageModel is FastLanguageModel
-    assert mlx_unsloth.SFTTrainer is SFTTrainer
-    assert mlx_unsloth.TrainingConfig is TrainingConfig
-    assert mlx_unsloth.to_mlx_jsonl is to_mlx_jsonl
-    assert mlx_unsloth.save_pretrained_merged is save_pretrained_merged
+    assert macsloth.FastLanguageModel is FastLanguageModel
+    assert macsloth.SFTTrainer is SFTTrainer
+    assert macsloth.TrainingConfig is TrainingConfig
+    assert macsloth.to_mlx_jsonl is to_mlx_jsonl
+    assert macsloth.save_pretrained_merged is save_pretrained_merged
     assert FastLanguageModel.save_pretrained_merged is save_pretrained_merged
     for name in (
         "FastLanguageModel",
@@ -29,4 +29,4 @@ def test_package_exports_unsloth_entry_points() -> None:
         "push_to_hub_merged",
         "write_ollama_modelfile",
     ):
-        assert name in mlx_unsloth.__all__
+        assert name in macsloth.__all__

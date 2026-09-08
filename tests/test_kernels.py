@@ -7,7 +7,7 @@ import pytest
 pytest.importorskip("mlx")
 
 import mlx.core as mx
-from mlx_unsloth.kernels import (
+from macsloth.kernels import (
     cross_entropy,
     lora_delta,
     lora_linear_forward,

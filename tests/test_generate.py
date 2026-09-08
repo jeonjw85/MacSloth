@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("mlx_lm")
 
-from mlx_unsloth.models.loader import FastLanguageModel
+from macsloth.models.loader import FastLanguageModel
 
 
 class _EvalModel:
@@ -46,7 +46,7 @@ def test_generate_forwards_to_mlx_lm(monkeypatch: pytest.MonkeyPatch) -> None:
         captured.verbose = verbose
         return "ok"
 
-    monkeypatch.setattr("mlx_unsloth.models.loader.mlx_generate", fake_generate)
+    monkeypatch.setattr("macsloth.models.loader.mlx_generate", fake_generate)
     text = FastLanguageModel.generate(
         SimpleNamespace(), SimpleNamespace(), "hi", max_tokens=8
     )

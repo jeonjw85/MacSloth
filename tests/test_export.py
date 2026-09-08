@@ -9,13 +9,13 @@ import pytest
 
 pytest.importorskip("mlx_lm")
 
-from mlx_unsloth.export import (
+from macsloth.export import (
     push_to_hub_merged,
     save_pretrained_gguf,
     save_pretrained_merged,
     write_ollama_modelfile,
 )
-from mlx_unsloth.export.errors import (
+from macsloth.export.errors import (
     MissingAdapterError,
     MissingGgufConfigError,
     UnsupportedGgufModelError,
@@ -68,21 +68,21 @@ def _patch_fuse(
         assert return_config is True
         return model, tokenizer, config
 
-    monkeypatch.setattr("mlx_unsloth.export.exporter.load", fake_load)
+    monkeypatch.setattr("macsloth.export.exporter.load", fake_load)
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.save",
+        "macsloth.export.exporter.save",
         lambda *args, **kwargs: None,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.dequantize_model",
+        "macsloth.export.exporter.dequantize_model",
         lambda loaded: loaded,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.tree_unflatten",
+        "macsloth.export.exporter.tree_unflatten",
         lambda fused: {"q_proj": fused[0][1]} if fused else {},
     )
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.tree_flatten",
+        "macsloth.export.exporter.tree_flatten",
         lambda params: [],
     )
     return model
@@ -122,7 +122,7 @@ def test_save_pretrained_gguf_writes_gguf_path(
         captured.append(output)
 
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.convert_to_gguf",
+        "macsloth.export.exporter.convert_to_gguf",
         fake_convert,
     )
 
@@ -148,17 +148,17 @@ def test_save_pretrained_gguf_missing_model_type_raises(
         del name, adapter_path, return_config
         return model, tokenizer, {}
 
-    monkeypatch.setattr("mlx_unsloth.export.exporter.load", fake_load)
+    monkeypatch.setattr("macsloth.export.exporter.load", fake_load)
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.save",
+        "macsloth.export.exporter.save",
         lambda *args, **kwargs: None,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.dequantize_model",
+        "macsloth.export.exporter.dequantize_model",
         lambda loaded: loaded,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.export.exporter.tree_unflatten",
+        "macsloth.export.exporter.tree_unflatten",
         lambda fused: {},
     )
 
@@ -188,7 +188,7 @@ def test_push_to_hub_merged_uploads(
     def fake_upload(path: str, repo_id: str) -> None:
         uploaded.append((path, repo_id))
 
-    monkeypatch.setattr("mlx_unsloth.export.exporter.upload_to_hub", fake_upload)
+    monkeypatch.setattr("macsloth.export.exporter.upload_to_hub", fake_upload)
 
     repo = push_to_hub_merged(
         "base-model",

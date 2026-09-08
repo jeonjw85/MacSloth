@@ -11,11 +11,11 @@ pytest.importorskip("mlx_lm")
 
 import mlx.core as mx
 import mlx.optimizers as optim
+from macsloth.trainer import TrainingConfig, run_sft
+from macsloth.trainer.errors import InvalidTrainingConfigError
+from macsloth.trainer.loop import SftLoopResult
 from mlx import nn
 from mlx_lm.tuner.datasets import CacheDataset
-from mlx_unsloth.trainer import TrainingConfig, run_sft
-from mlx_unsloth.trainer.errors import InvalidTrainingConfigError
-from mlx_unsloth.trainer.loop import SftLoopResult
 
 
 class _TinyLM(nn.Module):
@@ -115,7 +115,7 @@ def test_run_sft_checkpoints_layers0_when_enabled(
         seen.append(layer)
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.loop.grad_checkpoint",
+        "macsloth.trainer.loop.grad_checkpoint",
         fake_grad_checkpoint,
     )
     vocab_size = 16

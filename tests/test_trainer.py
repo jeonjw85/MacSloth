@@ -11,11 +11,9 @@ import pytest
 pytest.importorskip("mlx_lm")
 
 import mlx.core as mx
-from mlx.optimizers import Adam, AdamW
-from mlx_lm.tuner.datasets import CacheDataset
-from mlx_unsloth.models.loader import LoraSpec
-from mlx_unsloth.trainer import SFTTrainer, TrainingConfig
-from mlx_unsloth.trainer.errors import (
+from macsloth.models.loader import LoraSpec
+from macsloth.trainer import SFTTrainer, TrainingConfig
+from macsloth.trainer.errors import (
     EmptyTrainSetError,
     InsufficientUnifiedMemoryError,
     InvalidTrainingConfigError,
@@ -24,8 +22,10 @@ from mlx_unsloth.trainer.errors import (
     NotADatasetDirError,
     UnknownOptimizerError,
 )
-from mlx_unsloth.trainer.loop import SftLoopResult
-from mlx_unsloth.trainer.lora import _write_adapter_weights
+from macsloth.trainer.loop import SftLoopResult
+from macsloth.trainer.lora import _write_adapter_weights
+from mlx.optimizers import Adam, AdamW
+from mlx_lm.tuner.datasets import CacheDataset
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -46,7 +46,7 @@ def _sft_result(peak_memory_bytes: int = 0) -> SftLoopResult:
 @pytest.fixture(autouse=True)
 def _stub_adapter_weight_save(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora._write_adapter_weights",
+        "macsloth.trainer.lora._write_adapter_weights",
         lambda _model, _adapter_dir: None,
     )
 
@@ -105,10 +105,10 @@ def test_train_calls_run_sft_with_cached_train_set_and_config(
         return _sft_result()
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         fake_load_local_dataset,
     )
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
 
     config = TrainingConfig(
         batch_size=4,
@@ -153,15 +153,15 @@ def test_train_writes_adapter_weights_after_loop(
         saved.append(adapter_dir)
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora._write_adapter_weights",
+        "macsloth.trainer.lora._write_adapter_weights",
         fake_write,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.run_sft",
+        "macsloth.trainer.lora.run_sft",
         lambda *args, **kwargs: _sft_result(),
     )
     adapter = tmp_path / "adapters"
@@ -192,7 +192,7 @@ def test_write_adapter_weights_saves_trainable_parameters(
     def fake_save(path: str, weights: dict[str, mx.array]) -> None:
         captured.append((path, weights))
 
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.mx.save_safetensors", fake_save)
+    monkeypatch.setattr("macsloth.trainer.lora.mx.save_safetensors", fake_save)
 
     class _Host:
         def trainable_parameters(self) -> dict[str, mx.array]:
@@ -214,7 +214,7 @@ def test_train_calls_run_sft_when_valid_split_empty(
     captured = _Capture()
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
 
@@ -227,7 +227,7 @@ def test_train_calls_run_sft_when_valid_split_empty(
         captured.train_dataset = train_dataset
         return _sft_result()
 
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
 
     SFTTrainer(
         SimpleNamespace(
@@ -256,7 +256,7 @@ def test_adamw_optimizer(
 
     captured = _Capture()
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
 
@@ -269,7 +269,7 @@ def test_adamw_optimizer(
         captured.optimizer = optimizer
         return _sft_result()
 
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
 
     SFTTrainer(
         SimpleNamespace(
@@ -304,7 +304,7 @@ def test_missing_lora_spec_raises_before_dataset_load(
         return ([], [], ())
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         fail_if_called,
     )
 
@@ -320,7 +320,7 @@ def test_empty_train_set_raises(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: ([], [], []),
     )
 
@@ -355,7 +355,7 @@ def test_train_forwards_default_grad_checkpoint_false(
 
     captured = _Capture()
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
 
@@ -368,7 +368,7 @@ def test_train_forwards_default_grad_checkpoint_false(
         captured.config = config
         return _sft_result()
 
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
 
     SFTTrainer(
         SimpleNamespace(
@@ -397,7 +397,7 @@ def test_train_forwards_grad_checkpoint_false(
 
     captured = _Capture()
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
 
@@ -410,7 +410,7 @@ def test_train_forwards_grad_checkpoint_false(
         captured.config = config
         return _sft_result()
 
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
 
     SFTTrainer(
         SimpleNamespace(
@@ -483,11 +483,11 @@ def test_train_raises_metal_unavailable_when_metal_off(
         return ([], [], ())
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         fail_if_called,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.is_available",
+        "macsloth.trainer.lora.mx.metal.is_available",
         lambda: False,
     )
 
@@ -508,11 +508,11 @@ def test_train_raises_insufficient_unified_memory_when_working_set_too_small(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.is_available",
+        "macsloth.trainer.lora.mx.metal.is_available",
         lambda: True,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.device_info",
+        "macsloth.trainer.lora.mx.metal.device_info",
         lambda: {"max_recommended_working_set_size": 10},
     )
 
@@ -535,15 +535,15 @@ def test_train_proceeds_when_working_set_meets_minimum(
 ) -> None:
     trained: list[bool] = []
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.is_available",
+        "macsloth.trainer.lora.mx.metal.is_available",
         lambda: True,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.device_info",
+        "macsloth.trainer.lora.mx.metal.device_info",
         lambda: {"max_recommended_working_set_size": 20},
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
 
@@ -556,7 +556,7 @@ def test_train_proceeds_when_working_set_meets_minimum(
         trained.append(True)
         return _sft_result()
 
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
 
     SFTTrainer(
         _lora_model(),
@@ -573,11 +573,11 @@ def test_train_raises_metal_unavailable_when_device_info_key_missing(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.is_available",
+        "macsloth.trainer.lora.mx.metal.is_available",
         lambda: True,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.device_info",
+        "macsloth.trainer.lora.mx.metal.device_info",
         dict,
     )
 
@@ -598,11 +598,11 @@ def test_train_raises_metal_unavailable_when_device_info_not_mapping(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.is_available",
+        "macsloth.trainer.lora.mx.metal.is_available",
         lambda: True,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.device_info",
+        "macsloth.trainer.lora.mx.metal.device_info",
         lambda: None,
     )
 
@@ -637,12 +637,12 @@ def test_train_records_peak_memory_bytes_from_run_sft(
         return _sft_result(peak_memory_bytes=4242)
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fake_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fake_run_sft)
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.reset_peak_memory",
+        "macsloth.trainer.lora.mx.reset_peak_memory",
         fake_reset_peak_memory,
     )
 
@@ -660,23 +660,23 @@ def test_train_sets_wired_limit_when_metal_available(
 ) -> None:
     limits: list[int] = []
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.is_available",
+        "macsloth.trainer.lora.mx.metal.is_available",
         lambda: True,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.metal.device_info",
+        "macsloth.trainer.lora.mx.metal.device_info",
         lambda: {"max_recommended_working_set_size": 99},
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.set_wired_limit",
+        "macsloth.trainer.lora.mx.set_wired_limit",
         limits.append,
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.run_sft",
+        "macsloth.trainer.lora.run_sft",
         lambda **kwargs: _sft_result(),
     )
 
@@ -698,12 +698,12 @@ def test_train_leaves_peak_memory_none_when_run_sft_raises(
         raise RuntimeError
 
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.load_local_dataset",
+        "macsloth.trainer.lora.load_local_dataset",
         lambda path, tokenizer, config: (_Sized(8), [], []),
     )
-    monkeypatch.setattr("mlx_unsloth.trainer.lora.run_sft", fail_run_sft)
+    monkeypatch.setattr("macsloth.trainer.lora.run_sft", fail_run_sft)
     monkeypatch.setattr(
-        "mlx_unsloth.trainer.lora.mx.reset_peak_memory",
+        "macsloth.trainer.lora.mx.reset_peak_memory",
         lambda: None,
     )
 

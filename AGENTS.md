@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Repo: MacSloth. Python package: `mlx-unsloth`.
+Repo: MacSloth. Python package: `macsloth`.
 
 LoRA/QLoRA fine-tuning on Apple Silicon using MLX. Public API follows Unsloth (`FastLanguageModel`) so call sites stay short.
 
@@ -15,10 +15,10 @@ LoRA/QLoRA fine-tuning on Apple Silicon using MLX. Public API follows Unsloth (`
 
 | Path | Role |
 | :--- | :--- |
-| `mlx_unsloth/models/loader.py` | `FastLanguageModel`: load MLX weights, attach LoRA |
-| `mlx_unsloth/trainer/lora.py` | Training loop on MLX autograd / optimizers |
-| `mlx_unsloth/data/dataset.py` | ShareGPT / Alpaca / OpenAI messages -> MLX JSONL |
-| `mlx_unsloth/export/exporter.py` | Fuse, GGUF, Hub upload |
+| `macsloth/models/loader.py` | `FastLanguageModel`: load MLX weights, attach LoRA |
+| `macsloth/trainer/lora.py` | Training loop on MLX autograd / optimizers |
+| `macsloth/data/dataset.py` | ShareGPT / Alpaca / OpenAI messages -> MLX JSONL |
+| `macsloth/export/exporter.py` | Fuse, GGUF, Hub upload |
 | `examples/` | Short scripts that start from `FastLanguageModel` |
 
 Files listed above that do not exist yet are planned, not stubs to invent in passing.

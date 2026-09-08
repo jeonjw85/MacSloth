@@ -11,7 +11,7 @@ from mlx_lm.tokenizer_utils import TokenizerWrapper
 from mlx_lm.tuner.lora import LoRALinear
 from mlx_lm.tuner.utils import linear_to_lora_layers
 
-from mlx_unsloth.kernels.lora_metal import lora_linear_forward
+from macsloth.kernels.lora_metal import lora_linear_forward
 
 DEFAULT_LORA_TARGETS: Final[tuple[str, ...]] = (
     "q_proj",

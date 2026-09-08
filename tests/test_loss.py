@@ -8,9 +8,9 @@ pytest.importorskip("mlx")
 pytest.importorskip("mlx_lm")
 
 import mlx.core as mx
+from macsloth.trainer.loss import masked_lm_loss
 from mlx import nn
 from mlx_lm.tuner.trainer import default_loss
-from mlx_unsloth.trainer.loss import masked_lm_loss
 
 
 class _TinyLM(nn.Module):

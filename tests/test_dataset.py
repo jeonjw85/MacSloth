@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 from datasets import Dataset, DatasetDict
-from mlx_unsloth.data import (
+from macsloth.data import (
     EmptyDatasetError,
     MissingAssistantError,
     UnknownRecordFormatError,
     UnknownSpeakerError,
     to_mlx_jsonl,
 )
-from mlx_unsloth.data.errors import DatasetDictError
+from macsloth.data.errors import DatasetDictError
 
 if TYPE_CHECKING:
     from pathlib import Path

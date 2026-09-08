@@ -1,6 +1,6 @@
 """Load Qwen2.5-Coder, attach LoRA, train, and fuse adapters."""
 
-from mlx_unsloth import (
+from macsloth import (
     FastLanguageModel,
     SFTTrainer,
     TrainingConfig,

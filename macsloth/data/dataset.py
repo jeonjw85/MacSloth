@@ -11,7 +11,7 @@ from typing import Final, TypeAlias
 
 from datasets import Dataset, DatasetDict
 
-from mlx_unsloth.data.errors import (
+from macsloth.data.errors import (
     DatasetDictError,
     EmptyDatasetError,
     FieldTypeError,

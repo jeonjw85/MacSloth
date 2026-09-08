@@ -1,7 +1,7 @@
 """Dataset conversion into mlx-lm JSONL."""
 
-from mlx_unsloth.data.dataset import to_mlx_jsonl
-from mlx_unsloth.data.errors import (
+from macsloth.data.dataset import to_mlx_jsonl
+from macsloth.data.errors import (
     EmptyDatasetError,
     MissingAssistantError,
     UnknownRecordFormatError,

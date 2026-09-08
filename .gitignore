@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Tests / lint
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.dmypy.json
+
+# Local run artifacts
+/data/
+/adapters/
+/fused_model/
+*.safetensors
+*.gguf
+Modelfile
+
+# Agent / editor
+.omo/
+.idea/
+.vscode/
+*.swp
+.DS_Store

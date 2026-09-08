@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlx-unsloth"
+version = "0.1.0"
+description = "LoRA/QLoRA fine-tuning on Apple Silicon via MLX"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "mlx>=0.18.0",
+    "mlx-lm>=0.19.0",
+    "huggingface-hub",
+    "transformers",
+    "datasets",
+    "jinja2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.8",
+]
+
+[tool.setuptools.packages.find]
+include = ["mlx_unsloth*"]
+
+[tool.setuptools.package-data]
+mlx_unsloth = ["py.typed"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+src = ["mlx_unsloth", "tests", "examples"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",
+    "ISC001",
+    "D203",
+    "D213",
+    "CPY001",
+    "FBT001",
+    "FBT002",
+    "TD002",
+    "TD003",
+    "FIX002",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",
+    "ARG",
+    "PLR2004",
+    "SLF001",
+    "D",
+    "INP001",
+]
+"examples/**/*.py" = [
+    "T201",
+    "INP001",
+]
+"scripts/**/*.py" = [
+    "T201",
+    "INP001",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-config",
+    "--strict-markers",
+]
